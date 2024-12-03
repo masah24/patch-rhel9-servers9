@@ -1,0 +1,14 @@
+---
+- name: Update and patch all RHEL 9 servers
+  hosts: rhel9_servers
+  become: true
+  tasks:
+    - name: Ensure the system package manager is updated
+      ansible.builtin.yum:
+        name: '*'
+        state: latest
+
+    - name: Reboot the system if a kernel update was applied
+      ansible.builtin.reboot:
+        reboot_timeout: 600
+      when: ansible_kernel != ansible_facts['kernel']
